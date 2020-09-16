@@ -1,7 +1,7 @@
 # ConvALPR
 
 
-[![Alt Text](imgs/demo_alpr.gif)](https://youtu.be/-TPJot7-HTs?t=652)
+[![Alt Text](imgs/alpr.gif)](https://youtu.be/-TPJot7-HTs?t=652)
 
 **ConvALPR** es un Reconocedor Automatico de Patentes Vehiculares, que utiliza **Redes Neuronales Convolucionales**. A diferencia de metodos tradicionales, este approach puede reconocer patentes cuando estas tienen obstrucciones/diferencia de brillo/letras borrosas, etc. Este reconocedor consiste de dos etapas: **localizar** (detector de objetos) y **reconocedor** (Reconocimiento Optico de Caracteres). Ambas usan solamente **Redes Convolucionales/ConvNets/CNNs**.
 
