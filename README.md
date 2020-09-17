@@ -77,6 +77,50 @@ En el archivo de config en la fuente poner una imagen. Luego
 python reconocedor_automatico.py --cfg config.yaml --imagen --benchmark
 ```
 
+## Python API
+
+Para usarlo en tu proyecto podes leer de config o cread un dict, es lo mismo:
+
+### Forma #1 (cfg)
+
+```python
+from alpr.alpr import ALPR
+import cv2
+import yaml
+
+im = cv2.imread('imgs/prueba.jpg')
+with open('config.yaml', 'r') as stream:
+	cfg = yaml.safe_load(stream)
+alpr = ALPR(cfg['modelo'], cfg['db'])
+predicciones = alpr.predict(im)
+print(predicciones)
+```
+
+### Forma #2 (dict)
+
+```python
+from alpr.alpr import ALPR
+import cv2
+
+im = cv2.imread('imgs/prueba.jpg')
+alpr = ALPR(
+    {
+        'resolucion_detector': 512,
+        'confianza_detector': 0.25,
+        'numero_modelo_ocr': 2,
+        'confianza_avg_ocr': .4,
+        'confianza_low_ocr': .35
+    },
+    {
+        'guardar': True,
+        'insert_frequency': 5,
+        'path': 'test_db/plates_asd.db'
+    }
+)
+predicciones = alpr.predict(im)
+print(predicciones)
+```
+
 ## TODO
 
 - [ ] Ampliar modelos OCR
