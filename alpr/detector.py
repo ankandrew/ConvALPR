@@ -10,9 +10,9 @@ if len(physical_devices) > 0:
 
 
 class PlateDetector:
-    '''
+    """
     Modulo encargado del detector de patentes
-    '''
+    """
 
     def __init__(self,
                  weights_path: str,
@@ -27,7 +27,7 @@ class PlateDetector:
         self.yolo_infer = self.saved_model_loaded.signatures['serving_default']
 
     def procesar_salida_yolo(self, output):
-        '''
+        """
         Modificado de https://github.com/hunglc007/tensorflow-yolov4-tflite/blob/9f16748aa3f45ff240608da4bd9b1216a29127f5/detectvideo.py#L91
         Aplica a la salida de yolo Non Max Suppression (NMS) eliminando detecciones
         duplicadas del mismo objeto
@@ -37,7 +37,7 @@ class PlateDetector:
         Returns:
             Lista con losd Bounding Boxes de todas
             las patentes detectadas despues de NMS
-        '''
+        """
         for key, value in output.items():
             boxes = value[:, :, 0:4]
             pred_conf = value[:, :, 4:]
@@ -54,7 +54,7 @@ class PlateDetector:
         return [boxes.numpy(), scores.numpy(), classes.numpy(), valid_detections.numpy()]
 
     def preprocess(self, frame):
-        '''
+        """
         Normalizar pixeles entre [0; 1], agregar
         batch dimension y resizear la imagen para el
         el modelo correspondiente de yolo
@@ -62,7 +62,7 @@ class PlateDetector:
         Parametros
             frame: numpy array
         Returns: tf Tensor preprocesado
-        '''
+        """
         image_data = cv2.resize(frame, (self.input_size, self.input_size))
         image_data = image_data / 255.
         image_data = image_data[np.newaxis, ...].astype(np.float32)
@@ -70,7 +70,7 @@ class PlateDetector:
         return tf.constant(image_data)
 
     def predict(self, input_img: tf.Tensor):
-        '''
+        """
         Hace la inferencia a partir del tensor
         que contiene la img de entrada
 
@@ -79,11 +79,11 @@ class PlateDetector:
             (1, self.input_size, self.input_size, 3)
         Returns:
             Output de la salida de YOLO
-        '''
+        """
         return self.yolo_infer(input_img)
 
     def draw_bboxes(self, frame: np.ndarray, bboxes: list, mostrar_score: bool = False):
-        '''
+        """
         Para visualizar la salida del detector, se dibujan
         todos los rectangulos correspondiente a las patentes
         en el frame de entrada
@@ -93,33 +93,16 @@ class PlateDetector:
             bboxes: predicciones/output de despues del NMS
         Returns:
             Numpy array conteniendo los rectangulos dibujados
-        '''
+        """
         for x1, y1, x2, y2, score in self.yield_coords(frame, bboxes):
             fontScale = 2
             cv2.rectangle(frame, (x1, y1), (x2, y2), (36, 255, 12), 2)
             cv2.putText(frame, f'{score:.2f}%', (x1, y1 - 40), cv2.FONT_HERSHEY_SIMPLEX,
                         fontScale, (20, 10, 220), 5)
         return frame
-        # out_boxes, out_scores, out_classes, num_boxes = bboxes
-        # image_h, image_w, _ = frame.shape
-        # for i in range(num_boxes[0]):
-        #     coor = out_boxes[0][i]
-        #     x1 = int(coor[1] * image_w)
-        #     y1 = int(coor[0] * image_h)
-
-        #     x2 = int(coor[3] * image_w)
-        #     y2 = int(coor[2] * image_h)
-        #     # cropped_plate = frame[y1:y2, x1:x2]
-        #     # cropped_plate = cv2.cvtColor(cropped_plate, cv2.COLOR_RGB2GRAY)
-        #     # cropped_plate = cv2.resize(cropped_plate, (140, 70))
-        #     fontScale = 2
-        #     cv2.rectangle(frame, (x1, y1), (x2, y2), (36, 255, 12), 2)
-        #     cv2.putText(frame, f'{out_scores[0][i]:.2f}%', (x1, y1 - 40), cv2.FONT_HERSHEY_SIMPLEX,
-        #                 fontScale, (20, 10, 220), 5)
-        # return frame
 
     def yield_coords(self, frame: np.ndarray, bboxes: list):
-        '''
+        """
         Devuelve cada coordenada de los
         rectangulo localizadas
 
@@ -132,7 +115,7 @@ class PlateDetector:
                                 patente
             score:  Probabilidad de objectness de yolo
                     (que tan seguro piensa que es una patente)
-        '''
+        """
         out_boxes, out_scores, out_classes, num_boxes = bboxes
         image_h, image_w, _ = frame.shape
         for i in range(num_boxes[0]):

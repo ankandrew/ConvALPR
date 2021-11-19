@@ -1,9 +1,11 @@
-from .saver import SqlSaver
 from timeit import default_timer as timer
+
 import cv2
 import numpy as np
-from .ocr import PlateOCR
+
 from .detector import PlateDetector
+from .ocr import PlateOCR
+from .saver import SqlSaver
 
 
 class ALPR(SqlSaver):
@@ -27,7 +29,7 @@ class ALPR(SqlSaver):
         self.guardar_bd = cfg_db['guardar']
 
     def predict(self, frame: np.ndarray) -> list:
-        '''
+        """
         Devuelve todas las patentes reconocidas
         a partir de un frame. Si self.guardar_bd = True
         entonces cada n patentes se guardan en la base de datos
@@ -36,7 +38,7 @@ class ALPR(SqlSaver):
             frame: np.ndarray sin procesar (Colores en orden: RGB)
         Returns:
             Una lista con todas las patentes reconocidas
-        '''
+        """
         # Preprocess
         input_img = self.detector.preprocess(frame)
         # Inference
@@ -51,7 +53,7 @@ class ALPR(SqlSaver):
         return patentes
 
     def mostrar_predicts(self, frame: np.ndarray):
-        '''
+        """
         Mostrar localizador + reconocedor
 
         Parametros:
@@ -62,7 +64,7 @@ class ALPR(SqlSaver):
 
             total_time: tiempo de inferencia sin contar el dibujo
             de los rectangulos
-        '''
+        """
         total_time = 0
         start = timer()
         # Preprocess
@@ -87,7 +89,7 @@ class ALPR(SqlSaver):
             avg = np.mean(probs)
             if avg > self.ocr.confianza_avg and self.ocr.none_low(probs, thresh=self.ocr.none_low_thresh):
                 plate = (''.join(plate)).replace('_', '')
-                mostrar_txt = f'{plate} {avg*100:.0f}%'
+                mostrar_txt = f'{plate} {avg * 100:.0f}%'
                 cv2.putText(img=frame, text=mostrar_txt, org=(x1 - 20, y1 - 15),
                             fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=fontScale,
                             color=[0, 0, 0], lineType=cv2.LINE_AA, thickness=12)

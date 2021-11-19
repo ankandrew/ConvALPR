@@ -1,7 +1,8 @@
-import tensorflow as tf
-import numpy as np
-import cv2
 import string
+
+import cv2
+import numpy as np
+import tensorflow as tf
 
 MODELOS = {
     1: 'alpr/models/ocr/m1_2.0M_GPU',
@@ -12,19 +13,19 @@ MODELOS = {
 
 
 class PlateOCR:
-    '''
+    """
     Modulo encargado del reconocimiento
     de caracteres de las patentes (ya recortadas)
-    '''
+    """
 
     def __init__(self,
                  ocr_model_num: int = 4,
                  confianza_avg: float = 0.5,
                  none_low_thresh: float = 0.35):
-        '''
+        """
         Parametros:
             ocr_model_num   Numero del modelo a usar (1-4)
-        '''
+        """
         if ocr_model_num not in MODELOS:
             raise KeyError('Modelo inexistente, valores posibles: (1-4)')
 
@@ -36,7 +37,7 @@ class PlateOCR:
         self.none_low_thresh = none_low_thresh
 
     def predict(self, iter_coords, frame: np.ndarray) -> list:
-        '''
+        """
         Reconoce a partir de un frame todas
         las patentes en formato de texto
 
@@ -45,7 +46,7 @@ class PlateOCR:
             frame:  sub-frame conteniendo la patente candidato
         Returns:
             Lista de patentes (en formato de texto)
-        '''
+        """
         patentes = []
         for yolo_prediction in iter_coords:
             # x1, y1, x2, y2, score = yolo_prediction
@@ -59,10 +60,10 @@ class PlateOCR:
         return patentes
 
     def none_low(self, probs, thresh=.5):
-        '''
+        """
         Devuelve False si hay algun caracter
         con probabilidad por debajo de thresh
-        '''
+        """
         for prob in probs:
             if prob < thresh:
                 return False
@@ -77,7 +78,7 @@ class PlateOCR:
                     x2: int,
                     y2: int,
                     frame: np.ndarray):
-        '''
+        """
         Hace OCR en un sub-frame del frame
 
         Parametros:
@@ -86,7 +87,7 @@ class PlateOCR:
             x2: Valor de x de la esquina inferior derecha del rectangulo
             y2:    "     y           "             "                  "
             frame: array conteniendo la imagen original
-        '''
+        """
         cropped_plate = frame[y1:y2, x1:x2]
         prediction_ocr = self.__predict_from_array(cropped_plate)
         plate, probs = self.__probs_to_plate(prediction_ocr)
@@ -100,7 +101,7 @@ class PlateOCR:
         return plate, probs
 
     def __predict_from_array(self, patente_recortada: np.ndarray):
-        '''
+        """
         Hace el preprocessing (normaliza, agrega batch_dimension)
         y hace la inferencia
 
@@ -109,7 +110,7 @@ class PlateOCR:
         Returns:
             np.array de (1,259) que contiene las predicciones para cada
             caracter de la patente (37 posibles caracteres * 7 lugares)
-        '''
+        """
         patente_recortada = cv2.cvtColor(patente_recortada, cv2.COLOR_RGB2GRAY)
         patente_recortada = cv2.resize(patente_recortada, (140, 70))
         patente_recortada = patente_recortada[np.newaxis, ..., np.newaxis]
