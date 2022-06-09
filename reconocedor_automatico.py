@@ -14,19 +14,19 @@ def main_demo(cfg, demo=True, benchmark=True, save_vid=False, is_img=False):
     alpr = ALPR(cfg['modelo'], cfg['db'])
     video_path = cfg['video']['fuente']
     # try:
-    vid = cv2.VideoCapture(video_path)
-    cv2_wait = 0 if is_img else 1
+    cap = cv2.VideoCapture(video_path)
+    cv2_wait = 0 if cv2.haveImageReader(video_path) else 1
     frame_id = 0
     if save_vid:
-        width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH) + 0.5)
-        height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT) + 0.5)
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH) + 0.5)
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT) + 0.5)
         size = (width, height)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         out = cv2.VideoWriter('alpr-result.avi', fourcc, 20.0, size)
     # Cada cuantos frames hacer inferencia
-    intervalo_reconocimiento = video_path = cfg['video']['frecuencia_inferencia']
+    intervalo_reconocimiento = cfg['video']['frecuencia_inferencia']
     while True:
-        return_value, frame = vid.read()
+        return_value, frame = cap.read()
         if return_value:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         else:
@@ -62,7 +62,7 @@ def main_demo(cfg, demo=True, benchmark=True, save_vid=False, is_img=False):
                     print(display_bench, flush=True)
 
         frame_id += 1
-    vid.release()
+    cap.release()
     if save_vid:
         out.release()
     cv2.destroyAllWindows()
@@ -79,14 +79,12 @@ if __name__ == '__main__':
                             action='store_true', help="Guardar video en ./alpr-result.avi")
         parser.add_argument("--benchmark", dest="bench",
                             action='store_true', help="Medir la inferencia (incluye todo el pre/post processing")
-        parser.add_argument("--imagen", dest="is_img",
-                            action='store_true', help="La entrada es una imagen y no video")
         args = parser.parse_args()
         with open(args.cfg_file, 'r') as stream:
             try:
                 cfg = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
-        main_demo(cfg, args.demo, args.bench, args.save_video, args.is_img)
+        main_demo(cfg, args.demo, args.bench, args.save_video)
     except Exception as e:
         print(e)
