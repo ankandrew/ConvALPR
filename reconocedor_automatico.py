@@ -6,36 +6,43 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from alpr.alpr import ALPR
 from argparse import ArgumentParser
 import yaml
+import logging
 from timeit import default_timer as timer
 import cv2
 
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
-def main_demo(cfg, demo=True, benchmark=True, save_vid=False, is_img=False):
+
+def main_demo(cfg, demo=True, benchmark=True, save_vid=False):
     alpr = ALPR(cfg['modelo'], cfg['db'])
     video_path = cfg['video']['fuente']
-    # try:
-    vid = cv2.VideoCapture(video_path)
+    cap = cv2.VideoCapture(video_path)
+    is_img = cv2.haveImageReader(video_path)
     cv2_wait = 0 if is_img else 1
+    logger.info(f'Se va analizar la fuente: {video_path}')
     frame_id = 0
     if save_vid:
-        width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH) + 0.5)
-        height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT) + 0.5)
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH) + 0.5)
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT) + 0.5)
         size = (width, height)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         out = cv2.VideoWriter('alpr-result.avi', fourcc, 20.0, size)
     # Cada cuantos frames hacer inferencia
-    intervalo_reconocimiento = video_path = cfg['video']['frecuencia_inferencia']
+    intervalo_reconocimiento = cfg['video']['frecuencia_inferencia']
+    if not is_img:
+        logger.info(f'El intervalo del reconocimiento para el video es de: {intervalo_reconocimiento}')
     while True:
-        return_value, frame = vid.read()
+        return_value, frame = cap.read()
         if return_value:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         else:
-            # Descomenten esto para camaras IP
+            # Descomenten esto para camara IP Esto es por si el stream deja de transmitir algún
+            # frame o se tarda más de lo normal. En este caso simplemente volvemos a intentar leer el frame.
             # vid = cv2.VideoCapture(video_path)
             # continue
-            raise FileNotFoundError(
-                'No se encuentra el archivo de entrada (revisar config)'
-            )
+            break
         if demo:
             frame_w_pred, total_time = alpr.mostrar_predicts(
                 frame)
@@ -62,7 +69,7 @@ def main_demo(cfg, demo=True, benchmark=True, save_vid=False, is_img=False):
                     print(display_bench, flush=True)
 
         frame_id += 1
-    vid.release()
+    cap.release()
     if save_vid:
         out.release()
     cv2.destroyAllWindows()
@@ -79,14 +86,12 @@ if __name__ == '__main__':
                             action='store_true', help="Guardar video en ./alpr-result.avi")
         parser.add_argument("--benchmark", dest="bench",
                             action='store_true', help="Medir la inferencia (incluye todo el pre/post processing")
-        parser.add_argument("--imagen", dest="is_img",
-                            action='store_true', help="La entrada es una imagen y no video")
         args = parser.parse_args()
         with open(args.cfg_file, 'r') as stream:
             try:
                 cfg = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
-                print(exc)
-        main_demo(cfg, args.demo, args.bench, args.save_video, args.is_img)
+                logger.exception(exc)
+        main_demo(cfg, args.demo, args.bench, args.save_video)
     except Exception as e:
-        print(e)
+        logger.exception(e)

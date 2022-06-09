@@ -1,16 +1,17 @@
+"""
+Logica relacionada con guardar detecciones en una BD.
+"""
 import sqlite3
 from pathlib import Path
 
 
 class SqlSaver:
     """
-    Se encargar de guarda la información en una
+    Se encarga de guarda la información en una
     base de datos local (SQLite)
     """
 
-    def __init__(self,
-                 frequency_insert: int = 10,
-                 db_path: str = 'db/plates.db'):
+    def __init__(self, frequency_insert: int = 10, db_path: str = "db/plates.db"):
         """
         frequency_insert:   que tan seguido cantidad de patentes/len(unique_plates)
                             hacer un insert a la base de datos
@@ -23,8 +24,10 @@ class SqlSaver:
         Path(db_path.parent).mkdir(parents=True, exist_ok=True)
         self.conn = sqlite3.connect(db_path)
         cursor = self.conn.cursor()
-        cursor.execute('''CREATE TABLE IF NOT EXISTS plates
-                            (patente text)''')
+        cursor.execute(
+            """CREATE TABLE IF NOT EXISTS plates
+                            (patente text)"""
+        )
         self.conn.commit()
         cursor.close()
 
@@ -46,7 +49,9 @@ class SqlSaver:
         """
         cursor = self.conn.cursor()
         cursor.executemany(
-            "insert into plates(patente) values (?)", [(plate,) for plate in self.unique_plates])
+            "insert into plates(patente) values (?)",
+            [(plate,) for plate in self.unique_plates],
+        )
         self.conn.commit()
         cursor.close()
 

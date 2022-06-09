@@ -1,48 +1,48 @@
-video: 
+video:
     # Camara integrada
     #fuente: '0'
-    
+
     # Camara IP
     #fuente: 'rtsp://usuario:pass@IP:Puerto'
-    
+
     # Video en disco
     #fuente: 'C:/Usuarios/User/Escritorio/ejemplo.mp4'
-    
+
     # Imagen en disco
-    # (usar reconocedor_automatico.py --img)
-    fuente: './imgs/prueba.jpg'
+    # (usar reconocedor_automatico.py)
+    fuente: './assets/prueba.jpg'
 
     # Cada cuantos Frames hacer inferencia
     # No se aplica si --demo
     frecuencia_inferencia: 30
-modelo: 
+modelo:
     # resolucion puede ser {608, 512, 384}
     resolucion_detector: 512
-    
+
     # Objectness/Score de yolo
     confianza_detector: 0.25
-    
+
     # Modelos {1, 2, 3, 4}
     # 3 y 4 + rapidos en CPU
     numero_modelo_ocr: 3
-    
+
     # Se queda solo con aquellas patentes
     # cuyo promedio de las probabilidades de
     # los caracteres es mayor a 0.4
     confianza_avg_ocr: 0.40
-    
+
     # Si algun caracter esta por debajo de
     # confianza_low_ocr, se descarta
     confianza_low_ocr: 0.35
-db: 
+db:
     # Guardar en SQLite
     # ( Base de datos Local )
     # (No guarda cuando se usa --demo)
     guardar: true
-    
+
     # Cada cuantas patentes hacer
     # el insert en la BD
     insert_frequency: 50
-    
+
     # Path de la BD
     path: 'db/plates.db'

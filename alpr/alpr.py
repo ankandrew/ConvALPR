@@ -77,7 +77,7 @@ class ALPR(SqlSaver):
         iter_coords = self.detector.yield_coords(frame, bboxes)
         end = timer()
         total_time += end - start
-        fontScale = 2
+        fontScale = 1.25
         for yolo_prediction in iter_coords:
             x1, y1, x2, y2, _ = yolo_prediction
             #
@@ -89,11 +89,11 @@ class ALPR(SqlSaver):
             avg = np.mean(probs)
             if avg > self.ocr.confianza_avg and self.ocr.none_low(probs, thresh=self.ocr.none_low_thresh):
                 plate = (''.join(plate)).replace('_', '')
-                mostrar_txt = f'{plate} {avg * 100:.0f}%'
+                mostrar_txt = f'{plate} {avg * 100:.2f}%'
                 cv2.putText(img=frame, text=mostrar_txt, org=(x1 - 20, y1 - 15),
                             fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=fontScale,
-                            color=[0, 0, 0], lineType=cv2.LINE_AA, thickness=12)
+                            color=[0, 0, 0], lineType=cv2.LINE_AA, thickness=6)
                 cv2.putText(img=frame, text=mostrar_txt, org=(x1 - 20, y1 - 15),
                             fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=fontScale,
-                            color=[255, 255, 255], lineType=cv2.LINE_AA, thickness=5)
+                            color=[255, 255, 255], lineType=cv2.LINE_AA, thickness=2)
         return frame, total_time
