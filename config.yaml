@@ -10,7 +10,7 @@ video:
 
     # Imagen en disco
     # (usar reconocedor_automatico.py)
-    fuente: './imgs/prueba.jpg'
+    fuente: './assets/prueba.jpg'
 
     # Cada cuantos Frames hacer inferencia
     # No se aplica si --demo
