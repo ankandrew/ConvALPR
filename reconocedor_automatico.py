@@ -18,11 +18,10 @@ logger.setLevel(logging.INFO)
 def main_demo(cfg, demo=True, benchmark=True, save_vid=False):
     alpr = ALPR(cfg['modelo'], cfg['db'])
     video_path = cfg['video']['fuente']
-    logger.info(f'Se va analizar la fuente: {video_path}')
-    # try:
     cap = cv2.VideoCapture(video_path)
     is_img = cv2.haveImageReader(video_path)
     cv2_wait = 0 if is_img else 1
+    logger.info(f'Se va analizar la fuente: {video_path}')
     frame_id = 0
     if save_vid:
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH) + 0.5)
@@ -43,8 +42,7 @@ def main_demo(cfg, demo=True, benchmark=True, save_vid=False):
             # frame o se tarda más de lo normal. En este caso simplemente volvemos a intentar leer el frame.
             # vid = cv2.VideoCapture(video_path)
             # continue
-            logger.info('Omitiendo frame corrupto!')
-            continue
+            break
         if demo:
             frame_w_pred, total_time = alpr.mostrar_predicts(
                 frame)
