@@ -83,14 +83,6 @@ python reconocedor_automatico.py --cfg config.yaml --demo
 python reconocedor_automatico.py --cfg config.yaml
 ```
 
-### Visualizar prediccion de imagen y mostras FPS
-
-En el archivo de config en la fuente poner una imagen. Luego
-
-```
-python reconocedor_automatico.py --cfg config.yaml --imagen --benchmark
-```
-
 ## Python API
 
 Para usarlo en tu proyecto podes leer de config o cread un dict, es lo mismo:
