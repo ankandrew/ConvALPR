@@ -10,7 +10,7 @@ video:
 
     # Imagen en disco
     # (usar reconocedor_automatico.py)
-    fuente: './assets/prueba.jpg'
+    fuente: './assets/test_patente.mp4'
 
     # Cada cuantos Frames hacer inferencia
     # No se aplica si --demo
@@ -42,7 +42,7 @@ db:
 
     # Cada cuantas patentes hacer
     # el insert en la BD
-    insert_frequency: 50
+    insert_frequency: 1
 
     # Path de la BD
     path: 'db/plates.db'
