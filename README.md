@@ -33,7 +33,7 @@ de inferencia (es **mas lento**). Estos modelos se encuentran [`alpr/models/dete
 
 ## Reconocedor (ROC/OCR)
 
-![Demo yolo v4 tiny](https://github.com/ankandrew/cnn-ocr-lp/blob/master/extra/demo.gif)
+![Demo OCR](https://raw.githubusercontent.com/ankandrew/fast-plate-ocr/4a7dd34c9803caada0dc50a33b59487b63dd4754/extra/demo.gif)
 
 Para el **reconocedor de caracteres** [OCR](https://es.wikipedia.org/wiki/Reconocimiento_%C3%B3ptico_de_caracteres) de
 las patentes, se diseñaron unos modelos personalizados en TensorFlow Keras.
@@ -47,7 +47,7 @@ En este repositorio se pueden encontrar los mismos modelos que [aca](https://git
 Con python **3.x**:
 
 ```
-pip install -r requirements.txt
+pip install .
 ```
 
 Para correr con la **placa de video/GPU** y acelerar la inferencia, instalar
