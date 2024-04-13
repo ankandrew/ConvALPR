@@ -10,7 +10,6 @@ python = ">=3.10,<4.0"
 opencv-python = "^4.9.0.80"
 pyyaml = ">=5.0.0"
 tensorflow = ">=2.0.0"
-tensorflow-gpu = {version = ">=2.0.0", markers = "sys_platform != 'darwin'"}
 fast-plate-ocr = "^0.1.2"
 tf2onnx = "^1.16.1"
 onnxruntime = "^1.17.3"
