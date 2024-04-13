@@ -1,0 +1,33 @@
+name: Test
+on: push
+jobs:
+  test:
+    name: Test
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ '3.10', '3.11' ]
+        os: [ ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'poetry'
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Check format
+        run: make check_format
+
+      - name: Run linters
+        run: make lint
+
+      - name: Run tests
+        run: make test
