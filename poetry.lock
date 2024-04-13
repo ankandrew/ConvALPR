@@ -1350,16 +1350,6 @@ wrapt = ">=1.11.0"
 and-cuda = ["nvidia-cublas-cu12 (==12.3.4.1)", "nvidia-cuda-cupti-cu12 (==12.3.101)", "nvidia-cuda-nvcc-cu12 (==12.3.107)", "nvidia-cuda-nvrtc-cu12 (==12.3.107)", "nvidia-cuda-runtime-cu12 (==12.3.101)", "nvidia-cudnn-cu12 (==8.9.7.29)", "nvidia-cufft-cu12 (==11.0.12.1)", "nvidia-curand-cu12 (==10.3.4.107)", "nvidia-cusolver-cu12 (==11.5.4.101)", "nvidia-cusparse-cu12 (==12.2.0.103)", "nvidia-nccl-cu12 (==2.19.3)", "nvidia-nvjitlink-cu12 (==12.3.101)"]
 
 [[package]]
-name = "tensorflow-gpu"
-version = "2.12.0"
-description = "Removed: please install \"tensorflow\" instead."
-optional = false
-python-versions = "*"
-files = [
-    {file = "tensorflow-gpu-2.12.0.tar.gz", hash = "sha256:51cc56493594840814e55545cf36c006e174a6186f71418cc29aafa62e77b756"},
-]
-
-[[package]]
 name = "tensorflow-io-gcs-filesystem"
 version = "0.36.0"
 description = "TensorFlow IO"
@@ -1614,4 +1604,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<4.0"
-content-hash = "f37b535fda238041bc4779a9dd17b3b6db5089e11ee8519b5cec7c3720dbda9b"
+content-hash = "ef036961c9cfb943c150306990682284837cbcd2c96a103bd13b0681336aa635"
