@@ -1,5 +1,11 @@
 # ConvALPR
 
+[![Actions status](https://github.com/ankandrew/ConvALPR/actions/workflows/test.yaml/badge.svg)](https://github.com/ankandrew/ConvALPR/actions)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+[![image](https://img.shields.io/pypi/l/fast-plate-ocr.svg)](https://pypi.python.org/pypi/fast-plate-ocr)
+
 [![Alt Text](assets/alpr.gif)](https://youtu.be/-TPJot7-HTs?t=652)
 
 **ConvALPR** es un Reconocedor Automatico de Patentes Vehiculares, que utiliza **Redes Neuronales Convolucionales**. A
