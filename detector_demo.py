@@ -33,8 +33,7 @@ def main_demo(args):
         bboxes = detector_patente.procesar_salida_yolo(yolo_out)
         # Mostrar predicciones
         start = timer()
-        frame_w_preds = detector_patente.draw_bboxes(
-            frame, bboxes, mostrar_score=True)
+        frame_w_preds = detector_patente.draw_bboxes(frame, bboxes)
         end = timer()
         # Tiempo de inferencia
         exec_time = end - start

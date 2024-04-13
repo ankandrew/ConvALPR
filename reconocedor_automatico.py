@@ -16,7 +16,7 @@ logger.setLevel(logging.INFO)
 
 
 def main_demo(cfg, demo=True, benchmark=True, save_vid=False):
-    alpr = ALPR(cfg['modelo'], cfg['db'])
+    alpr = ALPR(cfg['modelo'])
     video_path = cfg['video']['fuente']
     cap = cv2.VideoCapture(video_path)
     is_img = cv2.haveImageReader(video_path)

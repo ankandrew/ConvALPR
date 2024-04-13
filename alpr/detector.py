@@ -1,8 +1,12 @@
-from tensorflow.python.saved_model import tag_constants
-import numpy as np
+"""
+Plate Detector.
+"""
+
 import cv2
+import numpy as np
 import tensorflow as tf
-physical_devices = tf.config.experimental.list_physical_devices('GPU')
+
+physical_devices = tf.config.experimental.list_physical_devices("GPU")
 if len(physical_devices) > 0:
     tf.config.experimental.set_memory_growth(physical_devices[0], True)
 # import os
@@ -14,21 +18,19 @@ class PlateDetector:
     Modulo encargado del detector de patentes
     """
 
-    def __init__(self,
-                 weights_path: str,
-                 input_size: int = 608,
-                 iou: float = 0.45,
-                 score: float = 0.25):
+    def __init__(
+        self, weights_path: str, input_size: int = 608, iou: float = 0.45, score: float = 0.25
+    ):
         self.input_size = input_size
         self.iou = iou
         self.score = score
-        self.saved_model_loaded = tf.saved_model.load(
-            weights_path, tags=[tag_constants.SERVING])
-        self.yolo_infer = self.saved_model_loaded.signatures['serving_default']
+        self.saved_model_loaded = tf.saved_model.load(weights_path)
+        self.yolo_infer = self.saved_model_loaded.signatures["serving_default"]
 
     def procesar_salida_yolo(self, output):
         """
-        Modificado de https://github.com/hunglc007/tensorflow-yolov4-tflite/blob/9f16748aa3f45ff240608da4bd9b1216a29127f5/detectvideo.py#L91
+        Modificado de https://github.com/hunglc007/tensorflow-yolov4-tflite -
+                      /blob/9f16748aa3f45ff240608da4bd9b1216a29127f5/detectvideo.py#L91
         Aplica a la salida de yolo Non Max Suppression (NMS) eliminando detecciones
         duplicadas del mismo objeto
 
@@ -38,18 +40,17 @@ class PlateDetector:
             Lista con losd Bounding Boxes de todas
             las patentes detectadas despues de NMS
         """
-        for key, value in output.items():
+        for value in output.values():
             boxes = value[:, :, 0:4]
             pred_conf = value[:, :, 4:]
 
         boxes, scores, classes, valid_detections = tf.image.combined_non_max_suppression(
             boxes=tf.reshape(boxes, (tf.shape(boxes)[0], -1, 1, 4)),
-            scores=tf.reshape(
-                pred_conf, (tf.shape(pred_conf)[0], -1, tf.shape(pred_conf)[-1])),
+            scores=tf.reshape(pred_conf, (tf.shape(pred_conf)[0], -1, tf.shape(pred_conf)[-1])),
             max_output_size_per_class=50,
             max_total_size=50,
             iou_threshold=self.iou,
-            score_threshold=self.score
+            score_threshold=self.score,
         )
         return [boxes.numpy(), scores.numpy(), classes.numpy(), valid_detections.numpy()]
 
@@ -64,7 +65,7 @@ class PlateDetector:
         Returns: tf Tensor preprocesado
         """
         image_data = cv2.resize(frame, (self.input_size, self.input_size))
-        image_data = image_data / 255.
+        image_data = image_data / 255.0
         image_data = image_data[np.newaxis, ...].astype(np.float32)
         # image_data = np.expand_dims(image_data, axis=0).astype(np.float32)
         return tf.constant(image_data)
@@ -82,7 +83,7 @@ class PlateDetector:
         """
         return self.yolo_infer(input_img)
 
-    def draw_bboxes(self, frame: np.ndarray, bboxes: list, mostrar_score: bool = False):
+    def draw_bboxes(self, frame: np.ndarray, bboxes: list):
         """
         Para visualizar la salida del detector, se dibujan
         todos los rectangulos correspondiente a las patentes
@@ -95,10 +96,17 @@ class PlateDetector:
             Numpy array conteniendo los rectangulos dibujados
         """
         for x1, y1, x2, y2, score in self.yield_coords(frame, bboxes):
-            fontScale = 2
+            font_scale = 2
             cv2.rectangle(frame, (x1, y1), (x2, y2), (36, 255, 12), 2)
-            cv2.putText(frame, f'{score:.2f}%', (x1, y1 - 40), cv2.FONT_HERSHEY_SIMPLEX,
-                        fontScale, (20, 10, 220), 5)
+            cv2.putText(
+                frame,
+                f"{score:.2f}%",
+                (x1, y1 - 40),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                font_scale,
+                (20, 10, 220),
+                5,
+            )
         return frame
 
     def yield_coords(self, frame: np.ndarray, bboxes: list):
@@ -116,7 +124,7 @@ class PlateDetector:
             score:  Probabilidad de objectness de yolo
                     (que tan seguro piensa que es una patente)
         """
-        out_boxes, out_scores, out_classes, num_boxes = bboxes
+        out_boxes, out_scores, _, num_boxes = bboxes
         image_h, image_w, _ = frame.shape
         for i in range(num_boxes[0]):
             coor = out_boxes[0][i]

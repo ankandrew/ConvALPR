@@ -22,10 +22,6 @@ modelo:
     # Objectness/Score de yolo
     confianza_detector: 0.25
 
-    # Modelos {1, 2, 3, 4}
-    # 3 y 4 + rapidos en CPU
-    numero_modelo_ocr: 3
-
     # Se queda solo con aquellas patentes
     # cuyo promedio de las probabilidades de
     # los caracteres es mayor a 0.4
@@ -34,15 +30,3 @@ modelo:
     # Si algun caracter esta por debajo de
     # confianza_low_ocr, se descarta
     confianza_low_ocr: 0.35
-db:
-    # Guardar en SQLite
-    # ( Base de datos Local )
-    # (No guarda cuando se usa --demo)
-    guardar: true
-
-    # Cada cuantas patentes hacer
-    # el insert en la BD
-    insert_frequency: 1
-
-    # Path de la BD
-    path: 'db/plates.db'
