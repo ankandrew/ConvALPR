@@ -1,0 +1,96 @@
+[tool.poetry]
+name = "alpr"
+version = "0.1.0"
+description = "ALPR."
+authors = ["ankandrew <61120139+ankandrew@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+opencv-python = "^4.9.0.80"
+pyyaml = ">=5.0.0"
+tensorflow = ">=2.0.0"
+tensorflow-gpu = {version = ">=2.0.0", markers = "sys_platform != 'darwin'"}
+fast-plate-ocr = "^0.1.2"
+tf2onnx = "^1.16.1"
+onnxruntime = "^1.17.3"
+
+[tool.poetry.group.test.dependencies]
+pytest = "*"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "*"
+ruff = "*"
+pylint = "*"
+types-pyyaml = "*"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    "W",
+    # Pyflakes
+    "F",
+    # pep8-naming
+    "N",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # flake8-unused-arguments
+    "ARG",
+    # Pylint
+    "PL",
+    # Perflint
+    "PERF",
+    # Ruff-specific rules
+    "RUF",
+    # pandas-vet
+    "PD",
+]
+ignore = ["N812", "PLR2004", "PD011"]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.pylint]
+max-args = 8
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.mypy]
+disable_error_code = "import-untyped"
+
+[tool.pylint.typecheck]
+generated-members = ["cv2.*"]
+signature-mutators = [
+    "click.decorators.option",
+    "click.decorators.argument",
+    "click.decorators.version_option",
+    "click.decorators.help_option",
+    "click.decorators.pass_context",
+    "click.decorators.confirmation_option"
+]
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylint."messages control"]
+disable = ["missing-class-docstring", "missing-function-docstring"]
+
+[tool.pylint.design]
+max-args = 8
+min-public-methods = 1
+
+[tool.pylint.basic]
+no-docstring-rgx = "^__|^test_"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
