@@ -79,6 +79,8 @@ class ALPR:
             cv2.rectangle(frame, (x1, y1), (x2, y2), (36, 255, 12), 2)
             start = timer()
             plate, probs = self.ocr.predict_ocr(x1, y1, x2, y2, frame)
+            if plate is None or probs is None:
+                continue
             total_time += timer() - start
             avg = np.mean(probs)
             if avg > self.ocr.confianza_avg and self.ocr.none_low(

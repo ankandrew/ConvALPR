@@ -40,6 +40,8 @@ class PlateOCR:
                 yolo_prediction.bounding_box.y2,
             )
             plate, probs = self.predict_ocr(x1, y1, x2, y2, frame)
+            if plate is None or probs is None:
+                continue
             # Ignorar si tiene baja confianza el OCR
             avg = np.mean(probs)
             if avg > self.confianza_avg and self.none_low(probs[0], thresh=self.none_low_thresh):
@@ -52,7 +54,7 @@ class PlateOCR:
         Devuelve False si hay algun caracter
         con probabilidad por debajo de thresh
         """
-        return all(prob >= thresh for prob in probs)
+        return all(prob >= thresh for prob in probs.tolist())
 
     def predict_ocr(self, x1: int, y1: int, x2: int, y2: int, frame: np.ndarray):
         """
@@ -66,6 +68,8 @@ class PlateOCR:
             frame: array conteniendo la imagen original
         """
         cropped_plate = frame[y1:y2, x1:x2]
+        if cropped_plate is None:
+            return None, None
         cropped_plate = cv2.cvtColor(cropped_plate, cv2.COLOR_BGR2GRAY)
         plate, probs = self.ocr_model.run(cropped_plate, return_confidence=True)
         return plate, probs

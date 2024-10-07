@@ -108,7 +108,10 @@ if __name__ == "__main__":
             action="store_true",
             help="Medir la inferencia (incluye todo el pre/post processing",
         )
-        args = parser.parse_args()
+        args = parser.parse_args([
+            "--cfg", "/Users/anka/PycharmProjects/ConvALPR/config.yaml",
+            "--demo", "--benchmark"
+        ])
         with open(args.cfg_file, "r") as stream:
             try:
                 cfg = yaml.safe_load(stream)
