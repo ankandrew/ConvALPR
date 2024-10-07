@@ -5,6 +5,7 @@ OCR module.
 import cv2
 import numpy as np
 from fast_plate_ocr import ONNXPlateRecognizer
+from open_image_models.detection.core.base import DetectionResult
 
 
 class PlateOCR:
@@ -18,21 +19,26 @@ class PlateOCR:
         self.none_low_thresh = none_low_thresh
         self.ocr_model = ONNXPlateRecognizer("argentinian-plates-cnn-model")
 
-    def predict(self, iter_coords, frame: np.ndarray) -> list:
+    def predict(self, plate_detections: list[DetectionResult], frame: np.ndarray) -> list:
         """
         Reconoce a partir de un frame todas
         las patentes en formato de texto
 
         Parametros:
-            iter_coords:    generator object que yieldea las patentes
+            plate_detections: Predicciones del detector de License plates.
             frame:  sub-frame conteniendo la patente candidato
         Returns:
             Lista de patentes (en formato de texto)
         """
         patentes = []
-        for yolo_prediction in iter_coords:
-            # x1, y1, x2, y2, score = yolo_prediction
-            x1, y1, x2, y2, _ = yolo_prediction
+        for yolo_prediction in plate_detections:
+            # pylint: disable=duplicate-code
+            x1, y1, x2, y2 = (
+                yolo_prediction.bounding_box.x1,
+                yolo_prediction.bounding_box.y1,
+                yolo_prediction.bounding_box.x2,
+                yolo_prediction.bounding_box.y2,
+            )
             plate, probs = self.predict_ocr(x1, y1, x2, y2, frame)
             # Ignorar si tiene baja confianza el OCR
             avg = np.mean(probs)

@@ -16,8 +16,8 @@ video:
     # No se aplica si --demo
     frecuencia_inferencia: 30
 modelo:
-    # resolucion puede ser {608, 512, 384}
-    resolucion_detector: 512
+    # resolucion puede ser {640, 512, 384, 256}
+    resolucion_detector: 384
 
     # Objectness/Score de yolo
     confianza_detector: 0.25

@@ -11,6 +11,7 @@ opencv-python = "^4.9.0.80"
 pyyaml = ">=5.0.0"
 tensorflow = ">=2.0.0"
 fast-plate-ocr = "^0.1.2"
+open-image-models = "^0.1.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "*"
