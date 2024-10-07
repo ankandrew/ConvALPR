@@ -8,6 +8,24 @@
 
 [![Alt Text](assets/alpr.gif)](https://youtu.be/-TPJot7-HTs?t=652)
 
+<!-- TOC -->
+* [ConvALPR](#convalpr)
+  * [Localizador](#localizador)
+  * [Reconocedor (ROC/OCR)](#reconocedor-rococr)
+  * [Como usarlo](#como-usarlo)
+    * [Instalar dependencias](#instalar-dependencias)
+    * [Visualizar solo localizador](#visualizar-solo-localizador)
+  * [Reconocedor Automatico](#reconocedor-automatico)
+    * [Config](#config)
+    * [Ejemplo visualizar ALPR](#ejemplo-visualizar-alpr)
+    * [Guarda en Base de Datos sin visualizar](#guarda-en-base-de-datos-sin-visualizar)
+  * [Python API](#python-api)
+    * [Forma #1 (cfg)](#forma-1-cfg)
+    * [Forma #2 (dict)](#forma-2-dict)
+    * [Notas](#notas)
+  * [TODO](#todo)
+<!-- TOC -->
+
 **ConvALPR** es un Reconocedor Automatico de Patentes Vehiculares, que utiliza **Redes Neuronales Convolucionales**. A
 diferencia de metodos tradicionales, este approach puede reconocer patentes con obstrucciones/diferencia de
 brillo/letras borrosas, etc. ConvALPR consiste de dos procesos: **localizar** (detector de objetos) y **reconocedor** (
@@ -17,19 +35,19 @@ Reconocimiento Optico de Caracteres). Ambas usan solamente **Redes Convolucional
 
 ## Localizador
 
-![Demo yolo v4 tiny](assets/demo_localizador.gif)
+![Demo yolo v9 tiny](assets/demo_localizador.gif)
 
-Para el **localizador** se usa yolo
-v4 **[tiny](https://github.com/AlexeyAB/darknet#yolo-v4-v3-and-v2-for-windows-and-linux)**, para lograr que el detector
-corra en **tiempo real**. Este detector de objetos se entreno con patentes (ni una sola de Argentina) aun asino tiene
-problemas en localizarlas con alta precision. Mas detalles de entrenamiento del
-detector **[aca](https://github.com/ankandrew/LocalizadorPatentes)**. Se convirtieron los parametros de framework
-Darknet a TensorFlow usando este **[repo](https://github.com/hunglc007/tensorflow-yolov4-tflite)**.
+Para el **localizador** se usa **yolo v9 tiny**, para lograr que el detector corra en **tiempo real**. Este detector de
+objetos se entrenó con patentes (ni una sola de Argentina), aun así no tiene problemas en localizarlas con alta
+precisión. Más detalles del entrenamiento del detector **[acá](https://github.com/ankandrew/LocalizadorPatentes)**.
 
-En este repo se pueden encontrar **3** versiones del localizador de patentes, misma arquitectura (**yolo v4 tiny sin
-spp**), pero con distinta resolucion de entrada. Los modelos usan res. de entrada de {*384x384*, *512x512*, *608x608*},
-donde a mayor la resolucion **mayor es la precision** (y puede detectar mejor patentes alejadas) pero mayor es el tiempo
-de inferencia (es **mas lento**). Estos modelos se encuentran [`alpr/models/detection`](alpr/models/detection)
+Hay **4** versiones del localizador de patentes, misma arquitectura (**yolo v9 tiny**), pero con distinta resolución de
+entrada. Los modelos usan resolución de entrada de {*256x256*, *384x384*, *512x512*, *640x640*}, donde a mayor
+resolución **mayor es la precisión** (y puede detectar mejor patentes alejadas) pero mayor es el tiempo de inferencia (
+es **más lento**).
+
+🔥 Ahora los modelos se usan desde **[Open Image Models](https://github.com/ankandrew/open-image-models)**, una nueva
+fuente de modelos optimizados que facilita el uso de detección de objetos en diferentes contextos.
 
 ## Reconocedor (ROC/OCR)
 
